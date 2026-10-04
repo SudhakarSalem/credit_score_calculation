@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Credit Scoring{% endblock %}</title>
+<style>
+  :root { --bg:#f4f6fa; --card:#fff; --ink:#1b2437; --muted:#6b768c; --brand:#1f3864; --line:#e2e7f0; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+  header { background:var(--brand); color:#fff; padding:14px 28px; display:flex; gap:28px; align-items:center; flex-wrap:wrap; }
+  header h1 { font-size:18px; margin:0 12px 0 0; }
+  header a { color:#cfd9ee; text-decoration:none; font-size:14px; }
+  header a:hover { color:#fff; }
+  main { max-width:1180px; margin:24px auto; padding:0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; margin-bottom:20px; }
+  h2 { margin:0 0 14px; font-size:20px; } h3 { margin:0 0 12px; font-size:15px; color:var(--brand); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { padding:9px 10px; text-align:left; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  tr:hover td { background:#fafbfe; }
+  .btn { display:inline-block; background:var(--brand); color:#fff; border:0; padding:9px 16px; border-radius:7px;
+         font-size:14px; cursor:pointer; text-decoration:none; }
+  .btn.alt { background:#fff; color:var(--brand); border:1px solid var(--brand); }
+  .grid { display:grid; gap:16px; } .g2 { grid-template-columns:repeat(2,1fr); } .g3 { grid-template-columns:repeat(3,1fr); }
+  .g4 { grid-template-columns:repeat(4,1fr); }
+  @media (max-width:800px){ .g2,.g3,.g4{ grid-template-columns:1fr; } }
+  .stat { text-align:center; } .stat b { display:block; font-size:26px; } .stat span { color:var(--muted); font-size:13px; }
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:4px; }
+  input,select { width:100%; padding:8px 10px; border:1px solid #cdd5e3; border-radius:6px; font-size:14px; background:#fff; }
+  .msg { padding:11px 14px; border-radius:7px; margin-bottom:14px; font-size:14px; }
+  .msg.success { background:#e6f6ec; color:#1b6b3a; } .msg.error { background:#fdecec; color:#9b1c1c; }
+  .errorlist { color:#b42318; font-size:12px; list-style:none; padding:0; margin:3px 0 0; }
+  .badge { padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+  .exceptional{background:#d1f5e0;color:#0b6b35}.very-good{background:#e0f3d5;color:#3a7a14}
+  .good{background:#fff3cc;color:#8a6500}.fair{background:#ffe1c2;color:#a14b00}.poor{background:#fbd5d5;color:#a31616}
+  .score { font-size:54px; font-weight:700; line-height:1; } .muted { color:var(--muted); font-size:13px; }
+  .bar { background:#e9edf5; border-radius:6px; height:9px; overflow:hidden; margin-top:5px; }
+  .bar i { display:block; height:100%; background:var(--brand); }
+  .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .radio-row label { display:inline-flex; align-items:center; gap:6px; margin-right:18px; color:var(--ink); }
+  .radio-row input { width:auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Credit Score Studio</h1>
+  <a href="{% url 'customer_list' %}">Customers</a>
+  <a href="{% url 'customer_create' %}">+ New customer</a>
+  <a href="{% url 'calculate' %}">Calculate score</a>
+  <a href="{% url 'download_excel' %}">Download Excel</a>
+</header>
+<main>
+  {% for m in messages %}<div class="msg {{ m.tags }}">{{ m }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

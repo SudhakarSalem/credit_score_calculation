@@ -1,0 +1,7 @@
+<table>
+  {% for b in rows %}
+  <tr><td style="width:230px"><b>{{ b.label }}</b></td>
+      <td>{% if b.points is not None %}<b>{{ b.points }}</b> / {{ b.max_points }} pts<div class="bar"><i style="width:{% widthratio b.points b.max_points 100 %}%"></i></div>
+          <div class="muted">{{ b.note }}</div>{% else %}{{ b.text }}{% endif %}</td></tr>
+  {% endfor %}
+</table>

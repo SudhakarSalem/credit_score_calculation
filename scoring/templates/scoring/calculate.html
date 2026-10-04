@@ -1,0 +1,36 @@
+{% extends "scoring/base.html" %}
+{% block title %}Calculate score{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Credit score calculation</h2>
+  {% if not has_key %}<div class="msg error">GEMINI_API_KEY is not set, so only the rule-based engine will work. See README.</div>{% endif %}
+  <form method="post">{% csrf_token %}
+    <div class="grid g2">
+      <div><label>Customer</label>{{ form.customer }}{{ form.customer.errors }}</div>
+      <div><label>Method</label><div class="radio-row" style="padding-top:6px">{{ form.method }}</div></div>
+    </div>
+    <p><button class="btn">Calculate &amp; save to Excel</button></p>
+  </form>
+</div>
+
+{% if local or gemini %}
+<h2>Result for {{ customer.name }} <span class="muted">{{ customer.customer_id }}</span></h2>
+<div class="grid g2">
+  {% if local %}
+  <div class="card"><h3>FINAL EVALUATION · Rule-based</h3>
+    <div class="score">{{ local.score }}</div>
+    <p><b>Credit tier:</b> <span class="badge {{ local.tier|slugify }}">{{ local.tier }}</span></p>
+    <p><b>Risk assessment:</b> {{ local.risk }}</p></div>
+  {% endif %}
+  {% if gemini %}
+  <div class="card"><h3>FINAL EVALUATION · Gemini AI</h3>
+    <div class="score">{{ gemini.score }}</div>
+    <p><b>Credit tier:</b> <span class="badge {{ gemini.tier|slugify }}">{{ gemini.tier }}</span></p>
+    <p><b>Risk assessment:</b> {{ gemini.risk }}</p></div>
+  {% endif %}
+</div>
+{% if local %}<div class="card"><h3>WEIGHTED BREAKDOWN · Rule-based</h3>{% include "scoring/_breakdown.html" with rows=local.breakdown %}</div>{% endif %}
+{% if gemini %}<div class="card"><h3>WEIGHTED BREAKDOWN · Gemini AI</h3>{% include "scoring/_breakdown.html" with rows=gemini_rows %}</div>{% endif %}
+<a class="btn alt" href="{% url 'customer_detail' customer.customer_id %}">Open customer profile</a>
+{% endif %}
+{% endblock %}

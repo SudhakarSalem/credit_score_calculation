@@ -1,0 +1,18 @@
+{% extends "scoring/base.html" %}
+{% block title %}New customer{% endblock %}
+{% block content %}
+<form method="post">{% csrf_token %}
+  <h2>Create customer</h2>
+  {% if form.non_field_errors %}<div class="msg error">{{ form.non_field_errors }}</div>{% endif %}
+  {% for title, fields in sections %}
+  <div class="card">
+    <h3>{{ title }}</h3>
+    <div class="grid g3">
+      {% for f in fields %}<div>{{ f.label_tag }}{{ f }}{{ f.errors }}</div>{% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  <button class="btn">Save customer &amp; score</button>
+  <a class="btn alt" href="{% url 'customer_list' %}">Cancel</a>
+</form>
+{% endblock %}

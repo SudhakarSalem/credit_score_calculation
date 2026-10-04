@@ -1,0 +1,37 @@
+{% extends "scoring/base.html" %}
+{% block content %}
+<div class="grid g4" style="margin-bottom:20px">
+  <div class="card stat"><b>{{ stats.count }}</b><span>Customers</span></div>
+  <div class="card stat"><b>{{ stats.avg }}</b><span>Average score</span></div>
+  <div class="card stat"><b>{{ stats.min }}</b><span>Lowest</span></div>
+  <div class="card stat"><b>{{ stats.max }}</b><span>Highest</span></div>
+</div>
+<div class="card">
+  <div class="row" style="justify-content:space-between;margin-bottom:14px">
+    <h2 style="margin:0">Customers</h2>
+    <form method="get" class="row">
+      <input name="q" value="{{ q }}" placeholder="Search name, ID, email, city" style="width:240px">
+      <select name="tier" style="width:150px">
+        <option value="">All tiers</option>
+        {% for t in tiers %}<option {% if t == tier %}selected{% endif %}>{{ t }}</option>{% endfor %}
+      </select>
+      <button class="btn alt">Filter</button>
+    </form>
+    <form method="post" action="{% url 'calculate_all' %}">{% csrf_token %}
+      <button class="btn alt">Recalculate all (rule-based)</button></form>
+  </div>
+  <table>
+    <tr><th>ID</th><th>Name</th><th>City</th><th>Utilization</th><th>Score</th><th>Tier</th><th>Gemini</th><th></th></tr>
+    {% for c in customers %}
+    <tr>
+      <td>{{ c.customer_id }}</td><td>{{ c.name }}<div class="muted">{{ c.email }}</div></td><td>{{ c.city }}</td>
+      <td>{% widthratio c.total_balance c.total_credit_limit 100 %}%</td>
+      <td><b>{{ c.local_score|default_if_none:"-" }}</b></td>
+      <td><span class="badge {{ c.local_tier|slugify }}">{{ c.local_tier }}</span></td>
+      <td>{{ c.gemini_score|default_if_none:"-" }}</td>
+      <td><a href="{% url 'customer_detail' c.customer_id %}">View</a></td>
+    </tr>
+    {% empty %}<tr><td colspan="8" class="muted">No customers match.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}
